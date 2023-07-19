@@ -1,12 +1,3 @@
-#include "certifier.h"
-#include "support.h"
-#ifdef SEV_SNP
-#include "sev-snp/attestation.h"
-#endif
-
-using namespace certifier::framework;
-using namespace certifier::utilities;
-
 //  Copyright (c) 2021-22, VMware Inc, and the Certifier Authors.  All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +11,15 @@ using namespace certifier::utilities;
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+#include "certifier.h"
+#include "support.h"
+#ifdef SEV_SNP
+#include "sev-snp/attestation.h"
+#endif
+
+using namespace certifier::framework;
+using namespace certifier::utilities;
 
 bool debug_print = false;
 
@@ -500,7 +500,7 @@ bool construct_standard_evidence_package(string& enclave_type, bool init_measure
   return true;
 }
 
-bool test_local_certify(string& enclave_type,
+bool test__local_certify(string& enclave_type,
           bool init_from_file, string& file_name,
           string& evidence_descriptor) {
   string enclave_id("test-enclave");
@@ -549,6 +549,35 @@ bool test_local_certify(string& enclave_type,
   }
 
   return true;
+}
+
+// test_local_certify(), test_partial_local_certify()
+// Exist so that we can exercise these tests from the Python bindings to
+// certifier_tests.so, for the default behaviour of these test cases.
+bool test_local_certify(bool print_all) {
+  string enclave_type("simulated-enclave");
+  string evidence_descriptor("full-vse-support");
+  string unused("Unused-file-name");
+
+  if (print_all) {
+    printf("%s(): enclave_type='%s', evidence_descriptor='%s'\n",
+            __func__, enclave_type.c_str(), evidence_descriptor.c_str());
+  }
+  return test__local_certify(enclave_type, false, unused,
+                             evidence_descriptor);
+}
+
+bool test_partial_local_certify(bool print_all) {
+  string enclave_type("simulated-enclave");
+  string evidence_descriptor("platform-attestation-only");
+  string unused("Unused-file-name");
+
+  if (print_all) {
+    printf("%s(): enclave_type='%s', evidence_descriptor='%s'\n",
+            __func__, enclave_type.c_str(), evidence_descriptor.c_str());
+  }
+  return test__local_certify(enclave_type, false, unused,
+                             evidence_descriptor);
 }
 
 // constrained delegation test
@@ -948,7 +977,7 @@ bool construct_standard_constrained_evidence_package(string& enclave_type,
   return true;
 }
 
-bool test_new_local_certify(string& enclave_type,
+bool test__new_local_certify(string& enclave_type,
           bool init_from_file, string& file_name,
           string& evidence_descriptor) {
   string enclave_id("test-enclave");
@@ -998,6 +1027,22 @@ bool test_new_local_certify(string& enclave_type,
     return false;
   }
   return true;
+}
+
+// Exists so that we can exercise this test from the Python bindings to
+// certifier_tests.so, for the default behaviour of this test cases.
+bool test_new_local_certify(bool print_all) {
+  string enclave_type("simulated-enclave");
+  string evidence_descriptor("full-vse-support");
+  string unused("Unused-file-name");
+
+  if (print_all) {
+    printf("%s(): enclave_type='%s', evidence_descriptor='%s'\n",
+            __func__, enclave_type.c_str(), evidence_descriptor.c_str());
+  }
+  return test__new_local_certify(enclave_type, false, unused,
+                                 evidence_descriptor);
+
 }
 
 // -----------------------------------------------------------------------------

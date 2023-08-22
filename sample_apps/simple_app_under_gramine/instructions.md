@@ -347,10 +347,14 @@ certifier.pb.go in certprotos.
 
 ```shell
 cd $CERTIFIER_PROTOTYPE/certifier_service/graminelib
-make dummy  # RESOLVE
+make
+cd $CERTIFIER_PROTOTYPE/certifier_service/oelib
+make dummy
+cd $CERTIFIER_PROTOTYPE/certifier_service/isletlib
+make dummy
+cd $CERTIFIER_PROTOTYPE/certifier_service/teelib
 make
 ```
-
 ### b. Now build simpleserver:
 ```shell
 cd $CERTIFIER_PROTOTYPE/certifier_service
@@ -410,7 +414,7 @@ gramine-sgx gramine_example_app         \
 
 gramine-sgx gramine_example_app         \
     --data_dir=./app2_data/             \
-    --operation=get-certifier           \
+    --operation=get-certified           \
     --policy_store_file=policy_store
     --print_all=true
 ```
@@ -428,7 +432,7 @@ gramine-sgx gramine_example_app         \
 
 gramine-sgx gramine_example_app         \
     --data_dir=./app1_data/             \
-    --operation=get-certifier           \
+    --operation=get-certified           \
     --policy_store_file=policy_store    \
     --print_all=true
 ```

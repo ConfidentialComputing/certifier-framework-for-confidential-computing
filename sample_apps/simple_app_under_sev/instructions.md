@@ -398,6 +398,13 @@ If you do not have OE SDK installed or do not want to enable OE:
 make dummy
 ```
 
+Compile the teelib for running the certifier service inside a TEE
+```shell
+cd $CERTIFIER_PROTOTYPE/certifier_service/teelib
+
+make
+```
+
 This should produce a Go file for the certifier protobufs called certifier.pb.go in certprotos.
 
 Now build simpleserver:
@@ -463,7 +470,7 @@ $EXAMPLE_DIR/sev_example_app.exe            \
 
 $EXAMPLE_DIR/sev_example_app.exe            \
         --data_dir=./app1_data/             \
-        --operation=get-certifier           \
+        --operation=get-certified           \
         --policy_store_file=policy_store    \
         --print_all=true
 ```
@@ -480,7 +487,7 @@ $EXAMPLE_DIR/sev_example_app.exe            \
 
 $EXAMPLE_DIR/sev_example_app.exe            \
         --data_dir=./app2_data/             \
-        --operation=get-certifier           \
+        --operation=get-certified           \
         --policy_store_file=policy_store    \
         --print_all=true
 ```

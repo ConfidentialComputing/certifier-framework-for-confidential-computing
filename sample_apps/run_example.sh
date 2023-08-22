@@ -1661,6 +1661,10 @@ function build_simple_server() {
     # shellcheck disable=SC2086
     run_cmd make -j "${NumMakeThreads}" ${make_arg}
 
+    run_cmd cd "${CERT_PROTO}"/certifier_service/teelib
+    # shellcheck disable=SC2086
+    run_cmd make -j "${NumMakeThreads}"
+
     # Now, build the simpleserver:
     run_cmd cd "${CERT_PROTO}"/certifier_service
     run_cmd rm -rf simpleserver
@@ -1848,7 +1852,7 @@ function run_app_by_name_as_server_talk_to_Cert_Service() {
 
     run_cmd "${EXAMPLE_DIR}/${app_name_exe}"                    \
                 --data_dir="./${Srvr_app_data}/"                \
-                --operation=get-certifier                       \
+                --operation=get-certified                       \
                 --measurement_file="example_app.measurement"    \
                 --policy_store_file=policy_store                \
                 --print_all=true
@@ -1870,7 +1874,7 @@ function run_simple_app_under_oe_as_server_talk_to_Cert_Service() {
 
     run_cmd ./host/host                             \
                 enclave/enclave.signed              \
-                get-certifier                       \
+                get-certified                       \
                 "${EXAMPLE_DIR}"/${Srvr_app_data}
 
     run_popd
@@ -1896,7 +1900,7 @@ function run_simple_app_under_gramine_as_server_talk_to_Cert_Service() {
 
     run_cmd gramine-sgx gramine_example_app         \
                 --data_dir="./${Srvr_app_data}/"    \
-                --operation=get-certifier           \
+                --operation=get-certified           \
                 --policy_store_file=policy_store    \
                 --print_all=true || 0
 
@@ -1916,7 +1920,7 @@ function run_simple_app_under_sev_as_server_talk_to_Cert_Service() {
 
     run_cmd "${EXAMPLE_DIR}"/sev_example_app.exe    \
                 --data_dir="./${Srvr_app_data}/"    \
-                --operation=get-certifier           \
+                --operation=get-certified           \
                 --policy_store_file=policy_store    \
                 --print_all=true
 
@@ -1969,7 +1973,7 @@ function run_app_by_name_as_client_talk_to_Cert_Service() {
 
     run_cmd "${EXAMPLE_DIR}/${app_name_exe}"                    \
                 --data_dir="./${Client_app_data}/"              \
-                --operation=get-certifier                       \
+                --operation=get-certified                       \
                 --measurement_file="example_app.measurement"    \
                 --policy_store_file=policy_store                \
                 --print_all=true
@@ -1991,7 +1995,7 @@ function run_simple_app_under_oe_as_client_talk_to_Cert_Service() {
 
     run_cmd ./host/host                             \
                 enclave/enclave.signed              \
-                get-certifier                       \
+                get-certified                       \
                 "${EXAMPLE_DIR}"/${Client_app_data}
 
     run_popd
@@ -2012,7 +2016,7 @@ function run_simple_app_under_gramine_as_client_talk_to_Cert_Service() {
 
     run_cmd gramine-sgx gramine_example_app         \
                 --data_dir="./${Client_app_data}/"  \
-                --operation=get-certifier           \
+                --operation=get-certified           \
                 --policy_store_file=policy_store    \
                 --print_all=true || 0
 
@@ -2035,7 +2039,7 @@ function run_simple_app_under_sev_as_client_talk_to_Cert_Service() {
 
     run_cmd "${EXAMPLE_DIR}"/sev_example_app.exe    \
                 --data_dir="./${Client_app_data}/"  \
-                --operation=get-certifier           \
+                --operation=get-certified           \
                 --policy_store_file=policy_store    \
                 --print_all=true
     run_popd
@@ -2597,7 +2601,7 @@ function run_simple_app_under_app_service_as_server_talk_to_Cert_Service() {
 
     run_cmd "${EXAMPLE_DIR}"/start_program.exe                              \
             --executable="${EXAMPLE_DIR}"/service_example_app.exe   \
-            --args="--print_all=true,--operation=get-certifier,--data_dir=${EXAMPLE_DIR}/${Srvr_app_data}/,--measurement_file=example_app.measurement,--policy_store_file=policy_store,--parent_enclave=simulated-enclave"
+            --args="--print_all=true,--operation=get-certified,--data_dir=${EXAMPLE_DIR}/${Srvr_app_data}/,--measurement_file=example_app.measurement,--policy_store_file=policy_store,--parent_enclave=simulated-enclave"
 
     run_popd
 }
@@ -2619,7 +2623,7 @@ function run_simple_app_under_app_service_as_client_talk_to_Cert_Service() {
 
     run_cmd "${EXAMPLE_DIR}"/start_program.exe                              \
             --executable="${EXAMPLE_DIR}"/service_example_app.exe   \
-            --args="--print_all=true,--operation=get-certifier,--data_dir=${EXAMPLE_DIR}/${Client_app_data}/,--measurement_file=example_app.measurement,--policy_store_file=policy_store,--parent_enclave=simulated-enclave"
+            --args="--print_all=true,--operation=get-certified,--data_dir=${EXAMPLE_DIR}/${Client_app_data}/,--measurement_file=example_app.measurement,--policy_store_file=policy_store,--parent_enclave=simulated-enclave"
 
     run_popd
 }

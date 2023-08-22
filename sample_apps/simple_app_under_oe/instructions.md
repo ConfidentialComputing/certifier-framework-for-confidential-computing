@@ -217,6 +217,13 @@ If you do not have OpenEnclave SDK installed or do not want to enable OpenEnclav
 make dummy
 ```
 
+Compile the teelib for running the certifier service inside a TEE
+```shell
+cd $CERTIFIER_PROTOTYPE/certifier_service/teelib
+
+make
+```
+
 This should produce a go file for the certifier protobufs called certifier.pb.go in certprotos.
 Now build simpeserver:
 
@@ -266,7 +273,7 @@ In app-as-a-client terminal run the following:
 ```shell
 cd $EXAMPLE_DIR
 ./host/host enclave/enclave.signed cold-init $EXAMPLE_DIR/app1_data
-./host/host enclave/enclave.signed get-certifier $EXAMPLE_DIR/app1_data
+./host/host enclave/enclave.signed get-certified $EXAMPLE_DIR/app1_data
 ```
 
 In app-as-a-server terminal run the following:
@@ -274,7 +281,7 @@ In app-as-a-server terminal run the following:
 ```shell
 cd $EXAMPLE_DIR
 ./host/host enclave/enclave.signed cold-init $EXAMPLE_DIR/app2_data
-./host/host enclave/enclave.signed get-certifier $EXAMPLE_DIR/app2_data
+./host/host enclave/enclave.signed get-certified $EXAMPLE_DIR/app2_data
 ```
 
 At this point, both versions of the app have their admission certificates.  You can look at

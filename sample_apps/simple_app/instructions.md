@@ -212,6 +212,13 @@ make
 make dummy
 ```
 
+  Compile the teelib for running the certifier service inside a TEE
+```shell
+cd $CERTIFIER_PROTOTYPE/certifier_service/teelib
+
+make
+```
+
 This should produce a Go file for the certifier protobufs called certifier.pb.go in certprotos.
 Now build simpleserver:
 
@@ -286,7 +293,7 @@ $EXAMPLE_DIR/example_app.exe                       \
 
 $EXAMPLE_DIR/example_app.exe                       \
       --data_dir=./app1_data/                      \
-      --operation=get-certifier                    \
+      --operation=get-certified                    \
       --measurement_file="example_app.measurement" \
       --policy_store_file=policy_store             \
       --print_all=true
@@ -306,7 +313,7 @@ $EXAMPLE_DIR/example_app.exe                       \
 
 $EXAMPLE_DIR/example_app.exe                       \
       --data_dir=./app2_data/                      \
-      --operation=get-certifier                    \
+      --operation=get-certified                    \
       --measurement_file="example_app.measurement" \
       --policy_store_file=policy_store             \
       --print_all=true
@@ -391,7 +398,7 @@ https://github.com/intel/linux-sgx/blob/master/sdk/sign_tool/SignTool/sign_tool.
 
 Other commands that can be run in the app-as-a-client terminal.
 
-The operations are: _cold-init_, _warm-restart_, _get-certifier_ and _run-app-as-client_.
+The operations are: _cold-init_, _get-certified_ and _run-app-as-client_.
 
 **NOTE: --data_dir=./app1_data/** in these examples.
 
@@ -405,14 +412,7 @@ The operations are: _cold-init_, _warm-restart_, _get-certifier_ and _run-app-as
 
 ./example_app.exe                               \
       --data_dir=./app1_data/                   \
-      --operation=warm-restart                  \
-      --policy_cert_file=policy_cert_file.bin   \
-      --policy_store_file=policy_store          \
-      --print_all=true
-
-./example_app.exe                               \
-      --data_dir=./app1_data/                   \
-      --operation=get-certifier                 \
+      --operation=get-certified                 \
       --policy_cert_file=policy_cert_file.bin   \
       --policy_store_file=policy_store          \
       --print_all=true
@@ -443,14 +443,7 @@ example_app.exe                                 \
 
 ./example_app.exe                               \
       --data_dir=./app2_data/                   \
-      --operation=warm-restart                  \
-      --policy_cert_file=policy_cert_file.bin   \
-      --policy_store_file=policy_store          \
-      --print_all=true
-
-./example_app.exe                               \
-      --data_dir=./app2_data/                   \
-      --operation=get-certifier                 \
+      --operation=get-certified                 \
       --policy_cert_file=policy_cert_file.bin   \
       --policy_store_file=policy_store          \
       --print_all=true

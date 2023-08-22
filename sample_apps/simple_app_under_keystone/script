@@ -115,6 +115,12 @@ make dummy
 cd $CERTIFIER_PROTOTYPE/certifier_service/graminelib
 make dummy
 
+cd $CERTIFIER_PROTOTYPE/certifier_service/isletlib
+make dummy
+
+cd $CERTIFIER_PROTOTYPE/certifier_service/teelib
+make
+
 cd $CERTIFIER_PROTOTYPE/certifier_service
 
 go build simpleserver.go
@@ -137,7 +143,7 @@ sleep 5
 
 # get client app certified
 $KEYSTONE_EXAMPLE_DIR/keystone_example_app.exe --print_all=true \
-      --operation=get-certifier --data_dir=./app1_data/ --measurement_file="example_app.measurement" \
+      --operation=get-certified --data_dir=./app1_data/ --measurement_file="example_app.measurement" \
       --policy_store_file=policy_store
 
 sleep 5
@@ -151,7 +157,7 @@ sleep 5
 
 # get server app certified
 $KEYSTONE_EXAMPLE_DIR/keystone_example_app.exe --print_all=true \
-      --operation=get-certifier --data_dir=./app2_data/ --measurement_file="example_app.measurement" \
+      --operation=get-certified --data_dir=./app2_data/ --measurement_file="example_app.measurement" \
        --policy_store_file=policy_store
 
 sleep 5

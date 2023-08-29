@@ -181,7 +181,11 @@ bool measure_binary(const string &file, string *m) {
   }
   byte         digest[32];
   unsigned int len = 32;
-  if (!digest_message("sha256", file_contents, bytes_read, digest, len)) {
+  if (!digest_message(Digest_method_sha256,
+                      file_contents,
+                      bytes_read,
+                      digest,
+                      len)) {
     printf("%s() error, line %d, Digest failed\n", __func__, __LINE__);
     free(file_contents);
     return false;
@@ -194,7 +198,11 @@ bool measure_binary(const string &file, string *m) {
 bool measure_in_mem_binary(byte *file_contents, int size, string *m) {
   byte         digest[32];
   unsigned int len = 32;
-  if (!digest_message("sha256", file_contents, (unsigned)size, digest, len)) {
+  if (!digest_message(Digest_method_sha256,
+                      file_contents,
+                      (unsigned)size,
+                      digest,
+                      len)) {
     printf("%s() error, line %d, Digest failed\n", __func__, __LINE__);
     return false;
   }
@@ -241,7 +249,9 @@ bool soft_Seal(spawned_children *kid, string in, string *out) {
                              (byte *)buffer_to_seal.data(),
                              buffer_to_seal.size(),
                              app_trust_data->sealing_key_bytes_,
+                             app_trust_data->max_symmetric_key_size_,
                              iv,
+                             block_size,
                              t_out,
                              &t_size)) {
     printf("%s() error, line %d, soft_Seal: authenticated encrypt failed\n",
@@ -265,6 +275,7 @@ bool soft_Unseal(spawned_children *kid, string in, string *out) {
                              (byte *)in.data(),
                              in.size(),
                              app_trust_data->sealing_key_bytes_,
+                             app_trust_data->max_symmetric_key_size_,
                              t_out,
                              &t_size)) {
     printf("%s() error, line %d, soft_Unseal: authenticated decrypt failed\n",
@@ -333,14 +344,15 @@ bool soft_Attest(spawned_children *kid, string in, string *out) {
   const string type("vse-attestation-report");
   string       signing_alg;
 
-  if (app_trust_data->private_service_key_.key_type() == "rsa-2048-private") {
-    signing_alg.assign("rsa-2048-sha256-pkcs-sign");
+  if (app_trust_data->private_service_key_.key_type()
+      == Enc_method_rsa_2048_private) {
+    signing_alg.assign(Enc_method_rsa_2048_sha256_pkcs_sign);
   } else if (app_trust_data->private_service_key_.key_type()
-             == "rsa-4096-private") {
-    signing_alg.assign("rsa-4096-sha384-pkcs-sign");
+             == Enc_method_rsa_4096_private) {
+    signing_alg.assign(Enc_method_rsa_4096_sha384_pkcs_sign);
   } else if (app_trust_data->private_service_key_.key_type()
-             == "ecc-384-private") {
-    signing_alg.assign("ecc-384-sha384-pkcs-sign");
+             == Enc_method_ecc_384_private) {
+    signing_alg.assign(Enc_method_ecc_384_sha384_pkcs_sign);
   } else {
     return false;
   }
@@ -766,8 +778,8 @@ done:
 
 
 // Standard algorithms for the enclave
-string public_key_alg("rsa-2048");
-string symmetric_key_alg("aes-256-cbc-hmac-sha256");
+string public_key_alg(Enc_method_rsa_2048);
+string symmetric_key_alg(Enc_method_aes_256_cbc_hmac_sha256);
 
 int main(int an, char **av) {
   string usage("Application Service utility");

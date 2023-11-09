@@ -40,8 +40,21 @@ DEFINE_string(output, "measurement_utility.exe.measurement", "output file");
 
 const int sha256_size = 32;
 
-// other_files is a comma-separated list of other-files to include in the
-// measurement
+/*
+ * Compute the hash-digest for the input file and, optionally, include
+ * a list of other-files that need to be included in the measurement,
+ * specified by the other_files argument.
+ *
+ * NOTE: We make sure to read-in the contents of all files that go into the
+ * measurement ino one buffer. This slightly reduces the chance that while
+ * this utility is running, we don't run into the Time-of-Check to Time-of-Use,
+ * abbreviated as "TOCTOU", 'vulnerability'. That might happen if we read-in
+ * file-1 first, and while other files are being read, contents of file-1
+ * is changed. Second, and more importantly, we use the digest_message()
+ * interface, which is a wrapper around EVP_Digest*() interfaces. This
+ * wrapper does not yield a hash that can be updated across a call to
+ * individual files.
+ */
 int hash_utility(string &input, string &other_files, string &output) {
 
   int in_size = file_size(input);
@@ -51,7 +64,6 @@ int hash_utility(string &input, string &other_files, string &output) {
   vector<string> other_files_list;
   vector<int>    other_files_size;
 
-  // (other_files.size() ? file_size(other_files) : 0);
   int other_files_total_size =
       (other_files.size() ? parse_other_files_size(other_files,
                                                    other_files_list,
@@ -62,12 +74,14 @@ int hash_utility(string &input, string &other_files, string &output) {
     printf("Error, reading one or more input files.\n");
     return 1;
   }
-  to_hash_size += (other_files_total_size + 1);
+  to_hash_size += (other_files_total_size);
 
   byte *       to_hash = (byte *)malloc(to_hash_size * sizeof(byte));
   byte *       to_hash_start = to_hash;
   byte         out[sha256_size];
   unsigned int out_len = sha256_size;
+
+  memset(out, 0, sizeof(out));
 
   if (to_hash == nullptr) {
     printf("Can't malloc %d bytes.\n", to_hash_size);
